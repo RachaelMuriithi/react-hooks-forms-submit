@@ -1,23 +1,67 @@
 import React, { useState } from "react";
 
 function Form(props) {
-  const [firstName, setFirstName] = useState("Sylvia");
-  const [lastName, setLastName] = useState("Woods");
+  const[userData, setUserData] = useState({
+    firstName:'Eshter',
+    lastName:'Caro',
+  });
+  const [submittedData, setSubmittedData] = useState([])
+  const [errors, setErrors] = useState([]);
 
-  function handleFirstNameChange(event) {
-    setFirstName(event.target.value);
+
+  function handleNamesChange(event){
+    const {value, name} = event.target;
+    setUserData({
+      ...userData,
+      [name]:value,
+    })
+
+    console.log(userData)
   }
 
-  function handleLastNameChange(event) {
-    setLastName(event.target.value);
+  
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if(userData.firstName.length > 0) {
+  
+      const newArray = [...submittedData, userData];
+      setSubmittedData(newArray);
+
+
+      setUserData({
+        firstName:'',
+        lastName:'',
+      })
+      setErrors([])
+    }
+    else{
+      setErrors(["FirstName is required"]);
+    }
+    
+
+    console.log(submittedData)
   }
+    const listData = submittedData.map((data, index) => <li key={index}>{data.firstName} {data.lastName}</li>)
 
   return (
-    <form>
-      <input type="text" onChange={handleFirstNameChange} value={firstName} />
-      <input type="text" onChange={handleLastNameChange} value={lastName} />
+    <div className="contatiner">
+    <form onSubmit={handleSubmit}>
+      <input type="text" onChange={handleNamesChange} value={userData.firstName}  name="firstName"/>
+      <input type="text" onChange={handleNamesChange} value={userData.lastName}  name="lastName"/>
       <button type="submit">Submit</button>
+
     </form>
+
+    {errors.length > 0 ? errors.map((error, index) => {
+      return <p key={index} style={{color:"red"}}>{error}</p>
+    }): null}
+    <h2>Submissions</h2>
+    <ul>
+    {listData}
+    </ul>
+    </div>
+  
   );
 }
 
